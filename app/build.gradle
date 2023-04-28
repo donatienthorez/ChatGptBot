@@ -65,6 +65,10 @@ dependencies {
     implementation 'androidx.compose.material3:material3-window-size-class'
     // Optional - Integration with activities
     implementation 'androidx.activity:activity-compose:1.6.1'
+    // Optional - Integration with ViewModels
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
+    // Optional - Integration with LiveData
+    implementation 'androidx.compose.runtime:runtime-livedata'
 
     // Koin for Android
     implementation "io.insert-koin:koin-core:$koin_version"
@@ -81,6 +85,13 @@ dependencies {
     // define any required OkHttp artifacts without version
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
+
+    // import Kotlin API client BOM
+    implementation platform('com.aallam.openai:openai-client-bom:3.2.0')
+
+    // define dependencies without versions
+    implementation 'com.aallam.openai:openai-client'
+    runtimeOnly 'io.ktor:ktor-client-okhttp'
 
     implementation 'androidx.core:core-ktx:1.8.20'
     implementation 'androidx.appcompat:appcompat:1.6.1'
