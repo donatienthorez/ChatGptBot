@@ -13,7 +13,7 @@ import com.donatienthorez.chatgptbot.chat.data.MessageStatus
 @OptIn(BetaOpenAI::class)
 class OpenAIRepository(private val openAI: OpenAI) {
 
-    @Throws(NoAnswerProvidedException::class)
+    @Throws(NoChoiceAvailableException::class)
     suspend fun sendChatRequest(
         conversation: Conversation
     ) : Message {
@@ -23,7 +23,7 @@ class OpenAIRepository(private val openAI: OpenAI) {
         )
 
         val chatMessage = openAI.chatCompletion(chatCompletionRequest).choices.first().message
-            ?: throw NoAnswerProvidedException()
+            ?: throw NoChoiceAvailableException()
 
         return Message(
             text = chatMessage.content,
@@ -42,4 +42,4 @@ class OpenAIRepository(private val openAI: OpenAI) {
         }
 }
 
-class NoAnswerProvidedException: Exception()
+class NoChoiceAvailableException: Exception()

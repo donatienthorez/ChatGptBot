@@ -4,6 +4,7 @@ import com.donatienthorez.chatgptbot.chat.data.ConversationRepository
 import com.donatienthorez.chatgptbot.chat.data.Message
 import com.donatienthorez.chatgptbot.chat.data.MessageStatus
 import com.donatienthorez.chatgptbot.chat.data.api.OpenAIRepository
+import kotlinx.coroutines.delay
 
 class SendChatRequestUseCase(
     private val openAIRepository: OpenAIRepository,
@@ -18,7 +19,6 @@ class SendChatRequestUseCase(
             isFromUser = true,
             messageStatus = MessageStatus.Sending
         )
-
         val conversation = conversationRepository.addMessage(message)
 
         try {

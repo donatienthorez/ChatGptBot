@@ -21,7 +21,8 @@ class ChatActivity : ComponentActivity() {
                         onSendMessage = viewModel::sendMessage,
                         onResendMessage = viewModel::resendMessage
                     ),
-                    messageList = viewModel.conversation
+                    messageList = viewModel.conversation,
+                    isSendingMessage = viewModel.isSendingMessage
                 )
             }
         }

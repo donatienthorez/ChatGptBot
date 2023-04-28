@@ -1,6 +1,7 @@
 package com.donatienthorez.chatgptbot.chat.ui
 
 import android.util.Log
+import android.widget.Spinner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -41,7 +43,8 @@ data class ChatScreenUiHandlers(
 @Composable
 fun ChatScreen(
     uiHandlers: ChatScreenUiHandlers = ChatScreenUiHandlers(),
-    messageList: LiveData<Conversation>
+    messageList: LiveData<Conversation>,
+    isSendingMessage: LiveData<Boolean>
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     var inputValue by remember { mutableStateOf("") }
@@ -50,6 +53,7 @@ fun ChatScreen(
     val listState = rememberLazyListState()
 
     val messageListState by messageList.observeAsState()
+    val isSendingMessageState by isSendingMessage.observeAsState()
 
     fun sendMessage() {
         uiHandlers.onSendMessage(inputValue)
@@ -92,18 +96,26 @@ fun ChatScreen(
                     colors = TextFieldDefaults.textFieldColors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                    ),
+                    )
                 )
                 HorizontalSpacer(8.dp)
                 Button(
                     modifier = Modifier.height(56.dp),
                     onClick = { sendMessage() },
-                    enabled = inputValue.isNotBlank(),
+                    enabled = inputValue.isNotBlank() && isSendingMessageState != true,
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Send,
-                        contentDescription = "Send"
-                    )
+                    if (isSendingMessageState == true) {
+                        Icon(
+                            imageVector = Icons.Default.Sync,
+                            contentDescription = "Sending"
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Send,
+                            contentDescription = "Send"
+                        )
+                    }
+
                 }
             }
         }
