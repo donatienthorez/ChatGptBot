@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ChatGptBot</string>
+
+    <string name="chat_message_loading">AI is typing…</string>
 </resources>

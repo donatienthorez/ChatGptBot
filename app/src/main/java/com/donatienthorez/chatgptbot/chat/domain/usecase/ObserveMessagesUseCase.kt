@@ -8,6 +8,6 @@ class ObserveMessagesUseCase(
     private val conversationRepository: ConversationRepository
 ) {
 
-    operator fun invoke() : Flow<Conversation> = conversationRepository.messagesFlow
+    operator fun invoke() : Flow<Conversation> = conversationRepository.conversationFlow
 
 }

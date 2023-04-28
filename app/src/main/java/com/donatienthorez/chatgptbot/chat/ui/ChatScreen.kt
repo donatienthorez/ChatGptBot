@@ -17,11 +17,15 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
+import com.donatienthorez.chatgptbot.R
 import com.donatienthorez.chatgptbot.chat.data.Conversation
 import com.donatienthorez.chatgptbot.chat.data.Message
+import com.donatienthorez.chatgptbot.chat.data.MessageStatus
 import com.donatienthorez.chatgptbot.utils.HorizontalSpacer
 import com.donatienthorez.chatgptbot.utils.VerticalSpacer
 import kotlinx.coroutines.launch
@@ -65,7 +69,12 @@ fun ChatScreen(
             Box(
                 modifier = Modifier.weight(1f)
             ) {
-                messageListState?.let { MessageList(it.list, listState) }
+                messageListState?.let {
+                    MessageList(
+                        messagesList = it.list,
+                        listState = listState
+                    )
+                }
             }
             Row {
                 TextField(
@@ -107,24 +116,49 @@ fun MessageList(
     ) {
         items(messagesList) { message ->
             Row {
-                if (message.fromUser) {
-                    HorizontalSpacer(width = 32.dp)
+                if (message.isFromUser) {
+                    HorizontalSpacer(width = 16.dp)
+                    Box(
+                        modifier = Modifier.weight(weight = 1f)
+                    )
                 }
                 Text(
                     text = message.text,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.inverseSurface,
+                    textAlign = if (message.isFromUser) { TextAlign.End } else { TextAlign.Start },
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(Color.Blue)
+                        .background(
+                            if (message.messageStatus == MessageStatus.Error) {
+                                MaterialTheme.colorScheme.errorContainer
+                            } else {
+                                if (message.isFromUser) {
+                                    MaterialTheme.colorScheme.secondaryContainer
+                                } else {
+                                    MaterialTheme.colorScheme.primaryContainer
+                                }
+                            }
+                        )
                         .padding(all = 8.dp)
                 )
-                if (!message.fromUser) {
-                    HorizontalSpacer(width = 32.dp)
+                if (!message.isFromUser) {
+                    HorizontalSpacer(width = 16.dp)
+                    Box(
+                        modifier = Modifier.weight(weight = 1f)
+                    )
                 }
             }
-            VerticalSpacer(height = 4.dp)
+            if (message.messageStatus == MessageStatus.Sending) {
+                VerticalSpacer(height = 4.dp)
+                Text(
+                    text = stringResource(R.string.chat_message_loading),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                HorizontalSpacer(width = 32.dp)
+            }
+            VerticalSpacer(height = 8.dp)
         }
     }
-
 }

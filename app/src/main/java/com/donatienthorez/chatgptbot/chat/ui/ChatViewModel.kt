@@ -5,19 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.donatienthorez.chatgptbot.chat.data.Conversation
-import com.donatienthorez.chatgptbot.chat.domain.usecase.AddMessageUseCase
 import com.donatienthorez.chatgptbot.chat.domain.usecase.ObserveMessagesUseCase
-import com.donatienthorez.chatgptbot.chat.domain.usecase.SendPromptUseCase
+import com.donatienthorez.chatgptbot.chat.domain.usecase.SendChatRequestUseCase
 import kotlinx.coroutines.launch
 
 class ChatViewModel(
-    val sendPromptUseCase: SendPromptUseCase,
-    val observeMessagesUseCase: ObserveMessagesUseCase,
-    val addMessageUseCase: AddMessageUseCase
+    private val sendChatRequestUseCase: SendChatRequestUseCase,
+    private val observeMessagesUseCase: ObserveMessagesUseCase,
 ) : ViewModel() {
 
-    private val _messagesList = MutableLiveData<Conversation>()
-    val messagesList: LiveData<Conversation> = _messagesList
+    private val _conversation = MutableLiveData<Conversation>()
+    val conversation: LiveData<Conversation> = _conversation
 
     init {
         observeMessageList()
@@ -26,14 +24,16 @@ class ChatViewModel(
     private fun observeMessageList() {
         viewModelScope.launch {
             observeMessagesUseCase.invoke().collect {
-                _messagesList.postValue(it)
+                _conversation.postValue(it)
             }
         }
     }
 
     fun sendMessage(prompt: String) {
         viewModelScope.launch {
-            addMessageUseCase(prompt)
+            sendChatRequestUseCase(
+                prompt
+            )
         }
     }
 }

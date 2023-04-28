@@ -2,27 +2,53 @@ package com.donatienthorez.chatgptbot.chat.data
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.util.UUID
 
 class ConversationRepository {
 
-    private val _messagesFlow = MutableStateFlow(value = Conversation(list = emptyList()))
-    val messagesFlow = _messagesFlow.asStateFlow()
-
-    fun addMessage(newMessage: String) {
-        val messages = _messagesFlow.value
-
-        val messagesList = mutableListOf<Message>()
-        messagesList.addAll(messages.list)
-        messagesList.add(
-            Message(
-                text = newMessage,
-                fromUser = true
-            )
+    private var messagesList = mutableListOf(
+        Message(
+            text = "Hi, how can I help?",
+            isFromUser = false,
+            messageStatus = MessageStatus.Sent
         )
+    )
 
-        _messagesFlow.value = Conversation(
+    private val _conversationFlow = MutableStateFlow(
+        value = Conversation(list = messagesList)
+    )
+    val conversationFlow = _conversationFlow.asStateFlow()
+
+    fun addMessage(message: Message) : Conversation {
+        messagesList.add(message)
+        return updateConversationFlow(messagesList)
+    }
+
+    fun setMessageStatusToSent(messageId: String) {
+        val index = messagesList.indexOfFirst { it.id == messageId }
+        if (index != -1) {
+            messagesList[index] = messagesList[index].copy(messageStatus = MessageStatus.Sent)
+        }
+
+        updateConversationFlow(messagesList)
+    }
+
+    fun setMessageStatusToError(messageId: String) {
+        val index = messagesList.indexOfFirst { it.id == messageId }
+        if (index != -1) {
+            messagesList[index] = messagesList[index].copy(messageStatus = MessageStatus.Error)
+        }
+
+        updateConversationFlow(messagesList)
+    }
+
+    private fun updateConversationFlow(messagesList: List<Message>) : Conversation {
+        val conversation = Conversation(
             list = messagesList
         )
+        _conversationFlow.value = conversation
+
+        return conversation
     }
 }
 
@@ -31,6 +57,14 @@ class Conversation(
 )
 
 data class Message(
+    val id: String = UUID.randomUUID().toString(),
     val text: String,
-    val fromUser: Boolean
+    val isFromUser: Boolean,
+    val messageStatus: MessageStatus = MessageStatus.Sending
 )
+
+sealed class MessageStatus {
+    object Sending: MessageStatus()
+    object Error: MessageStatus()
+    object Sent: MessageStatus()
+}

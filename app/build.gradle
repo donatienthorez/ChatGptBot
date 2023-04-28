@@ -75,17 +75,6 @@ dependencies {
     implementation "io.insert-koin:koin-android:$koin_version"
     implementation "io.insert-koin:koin-androidx-compose:$koin_version"
 
-    //Okhttp
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
-
-    //Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-
-    // define any required OkHttp artifacts without version
-    implementation("com.squareup.okhttp3:okhttp")
-    implementation("com.squareup.okhttp3:logging-interceptor")
-
     // import Kotlin API client BOM
     implementation platform('com.aallam.openai:openai-client-bom:3.2.0')
 

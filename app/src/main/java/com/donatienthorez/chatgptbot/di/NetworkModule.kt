@@ -1,25 +1,26 @@
 package com.donatienthorez.chatgptbot.di
 
+import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.client.OpenAI
-import okhttp3.OkHttpClient
+import com.aallam.openai.client.OpenAIConfig
 import org.koin.dsl.module
-import retrofit2.Retrofit
+import kotlin.time.Duration.Companion.seconds
 
 val networkModule = module {
-    single { provideOkhttpClient() }
-    single { provideRetrofit(okHttpClient = get()) }
-
     single { provideOpenAI() }
 }
 
-fun provideOkhttpClient() = OkHttpClient.Builder().build()
+fun provideOpenAI() : OpenAI {
+    val config = OpenAIConfig(
+        token = "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",
+        timeout = Timeout(
+            request = 20.seconds,
+            connect = 20.seconds,
+            socket = 20.seconds
+        ),
+    )
 
-fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-    return Retrofit.Builder()
-        .baseUrl("https://api.openai.com/")
-        .client(okHttpClient)
-        .build()
+    return OpenAI(config)
+
 }
-
-fun provideOpenAI() = OpenAI("")
 

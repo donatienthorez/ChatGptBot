@@ -1,16 +1,12 @@
 package com.donatienthorez.chatgptbot.chat.ui
 
 import android.os.Bundle
-import android.os.PersistableBundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import androidx.activity.compose.setContent
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.sp
+import com.donatienthorez.chatgptbot.ui.ChatGptBotAppTheme
 
-class ChatActivity : AppCompatActivity() {
+class ChatActivity : ComponentActivity() {
 
     private val viewModel: ChatViewModel by stateViewModel(
         state = { intent?.extras ?: Bundle() }
@@ -19,12 +15,12 @@ class ChatActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
+            ChatGptBotAppTheme {
                 ChatScreen(
                     uiHandlers = ChatScreenUiHandlers(
                         onSendMessage = viewModel::sendMessage
                     ),
-                    messageList = viewModel.messagesList
+                    messageList = viewModel.conversation
                 )
             }
         }
