@@ -32,12 +32,14 @@ class OpenAIRepository(private val openAI: OpenAI) {
         )
     }
 
-    private fun Conversation.toChatMessages() = this.list.map {
-        ChatMessage(
-            content = it.text,
-            role = if (it.isFromUser) { ChatRole.User } else { ChatRole.Assistant }
-        )
-    }
+    private fun Conversation.toChatMessages() = this.list
+        .filterNot { it.messageStatus == MessageStatus.Error }
+        .map {
+            ChatMessage(
+                content = it.text,
+                role = if (it.isFromUser) { ChatRole.User } else { ChatRole.Assistant }
+            )
+        }
 }
 
 class NoAnswerProvidedException: Exception()

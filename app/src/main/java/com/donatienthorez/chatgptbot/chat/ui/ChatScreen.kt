@@ -1,6 +1,8 @@
 package com.donatienthorez.chatgptbot.chat.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -31,7 +33,8 @@ import com.donatienthorez.chatgptbot.utils.VerticalSpacer
 import kotlinx.coroutines.launch
 
 data class ChatScreenUiHandlers(
-    val onSendMessage: (String) -> Unit = {}
+    val onSendMessage: (String) -> Unit = {},
+    val onResendMessage: (Message) -> Unit = {}
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,7 +75,8 @@ fun ChatScreen(
                 messageListState?.let {
                     MessageList(
                         messagesList = it.list,
-                        listState = listState
+                        listState = listState,
+                        onResendMessage = uiHandlers.onResendMessage
                     )
                 }
             }
@@ -109,7 +113,8 @@ fun ChatScreen(
 @Composable
 fun MessageList(
     messagesList: List<Message>,
-    listState: LazyListState
+    listState: LazyListState,
+    onResendMessage: (Message) -> Unit
 ) {
     LazyColumn(
         state = listState
@@ -140,7 +145,11 @@ fun MessageList(
                                 }
                             }
                         )
+                        .clickable(enabled = message.messageStatus == MessageStatus.Error) {
+                            onResendMessage(message)
+                        }
                         .padding(all = 8.dp)
+
                 )
                 if (!message.isFromUser) {
                     HorizontalSpacer(width = 16.dp)
@@ -150,13 +159,29 @@ fun MessageList(
                 }
             }
             if (message.messageStatus == MessageStatus.Sending) {
-                VerticalSpacer(height = 4.dp)
                 Text(
                     text = stringResource(R.string.chat_message_loading),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
                 HorizontalSpacer(width = 32.dp)
+            }
+            if (message.messageStatus == MessageStatus.Error) {
+                Row(
+                    modifier = Modifier
+                        .clickable {
+                            onResendMessage(message)
+                        }
+                ) {
+                    Box(
+                        modifier = Modifier.weight(weight = 1f)
+                    )
+                    Text(
+                        text = stringResource(R.string.chat_message_error),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             }
             VerticalSpacer(height = 8.dp)
         }

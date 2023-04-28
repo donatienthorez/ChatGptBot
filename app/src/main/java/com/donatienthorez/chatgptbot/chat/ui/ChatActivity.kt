@@ -18,7 +18,8 @@ class ChatActivity : ComponentActivity() {
             ChatGptBotAppTheme {
                 ChatScreen(
                     uiHandlers = ChatScreenUiHandlers(
-                        onSendMessage = viewModel::sendMessage
+                        onSendMessage = viewModel::sendMessage,
+                        onResendMessage = viewModel::resendMessage
                     ),
                     messageList = viewModel.conversation
                 )

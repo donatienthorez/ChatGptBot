@@ -24,6 +24,12 @@ class ConversationRepository {
         return updateConversationFlow(messagesList)
     }
 
+    fun resendMessage(message: Message) : Conversation {
+        messagesList.remove(message)
+        messagesList.add(message)
+        return updateConversationFlow(messagesList)
+    }
+
     fun setMessageStatusToSent(messageId: String) {
         val index = messagesList.indexOfFirst { it.id == messageId }
         if (index != -1) {
