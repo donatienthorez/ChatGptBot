@@ -11,8 +11,8 @@ The app allows users to chat with an AI model that uses OpenAI's GPT-3 language 
 [device-2023-04-29-121149.webm](https://user-images.githubusercontent.com/5604165/235278948-49e01143-1090-4d79-8310-7449466faaab.webm)
 
 # How to make it work
-- Simply replace token=XXX in NetworkModule with your OpenAI API key that you can find [on OpenAI platform](https://platform.openai.com/)
-- NEVER publish that key to Github. I did it to save time but immediately deleted it on OpenAI platform. Consider using environment variable instead. 
+- Simply replace `OPEN_AI_API_KEY` in `app/gradle.properties` with your OpenAI API key that you can find [on OpenAI platform](https://platform.openai.com/)
+- NEVER publish that file to Github. I did it to show you how it works and have a quick setup. 
 
 Enjoy!
 

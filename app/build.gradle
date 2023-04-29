@@ -22,6 +22,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            buildConfigField "String", "OPEN_AI_API_KEY", OPEN_AI_API_KEY
+        }
     }
 
     buildFeatures {
