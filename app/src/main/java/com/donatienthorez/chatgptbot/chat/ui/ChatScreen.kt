@@ -1,7 +1,5 @@
 package com.donatienthorez.chatgptbot.chat.ui
 
-import android.util.Log
-import android.widget.Spinner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -43,7 +41,7 @@ data class ChatScreenUiHandlers(
 @Composable
 fun ChatScreen(
     uiHandlers: ChatScreenUiHandlers = ChatScreenUiHandlers(),
-    messageList: LiveData<Conversation>,
+    conversation: LiveData<Conversation>,
     isSendingMessage: LiveData<Boolean>
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -52,14 +50,14 @@ fun ChatScreen(
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
-    val messageListState by messageList.observeAsState()
+    val conversationState by conversation.observeAsState()
     val isSendingMessageState by isSendingMessage.observeAsState()
 
     fun sendMessage() {
         uiHandlers.onSendMessage(inputValue)
         inputValue = ""
         coroutineScope.launch {
-            listState.animateScrollToItem(messageListState?.list?.size ?: 0)
+            listState.animateScrollToItem(conversationState?.list?.size ?: 0)
         }
     }
 
@@ -76,7 +74,7 @@ fun ChatScreen(
             Box(
                 modifier = Modifier.weight(1f)
             ) {
-                messageListState?.let {
+                conversationState?.let {
                     MessageList(
                         messagesList = it.list,
                         listState = listState,
